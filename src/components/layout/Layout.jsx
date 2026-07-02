@@ -7,7 +7,7 @@ export default function Layout() {
         <>
             <Navbar />
 
-            <main className="min-h-screen">
+            <main className="min-h-screen ">
                 <Outlet />
             </main>
 

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Restaurant from "../pages/Restaurant";
 import Cart from "../pages/Cart";
+import Orders from "../pages/Orders";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
@@ -31,6 +32,8 @@ export default function AppRoutes() {
                         path="/dashboard"
                         element={<Dashboard />}
                     />
+
+                    <Route path="/orders" element={<Orders />} />
 
                 </Route>
 
