@@ -367,7 +367,7 @@ md:grid-cols-4"
               </h2>
 
               <p className="mt-1 text-xs font-medium uppercase tracking-wide text-gray-500">
-                Restaurants
+                Partner Restaurants
               </p>
             </motion.div>
 
@@ -388,7 +388,7 @@ md:grid-cols-4"
               </h2>
 
               <p className="mt-1 text-xs font-medium uppercase tracking-wide text-gray-500">
-                Delivery
+                Average Delivery 
               </p>
             </motion.div>
 

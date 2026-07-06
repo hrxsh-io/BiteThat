@@ -1,128 +1,149 @@
-import { Heart, Plus, Star } from "lucide-react";
+import "./FoodCard.css";
 
-const FoodCard = ({ food }) => {
+import { motion } from "framer-motion";
+
+import {
+  Star,
+  Clock3,
+  ArrowUpRight,
+  Plus,
+  Check,
+} from "lucide-react";
+
+const FoodCard = ({
+  food,
+  buttonVariant = "explore",
+  onCardClick,
+  onButtonClick,
+}) => {
+  const renderIcon = () => {
+    switch (buttonVariant) {
+      case "add":
+        return <Plus size={18} />;
+
+      case "added":
+        return <Check size={18} />;
+
+      default:
+        return <ArrowUpRight size={18} />;
+    }
+  };
+
   return (
-    <div
-      className="
-      group
-      relative
-      bg-white
-      rounded-[35px]
-      p-5
-      shadow-lg
-      hover:shadow-[0_20px_50px_rgba(124,58,237,.20)]
-      transition-all
-      duration-500
-      hover:-translate-y-2
-      overflow-hidden
-      "
+    <motion.article
+      className="food-card"
+      onClick={onCardClick}
+      initial={{
+        opacity: 0,
+        y: 40,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+      }}
+      transition={{
+        duration: 0.55,
+      }}
+      whileHover={{
+        y: -10,
+      }}
     >
-      {/* Background Glow */}
+      {/* ================= IMAGE ================= */}
 
-      <div
-        className="
-        absolute
-        -top-20
-        -right-20
-        w-40
-        h-40
-        rounded-full
-        bg-violet-100
-        blur-3xl
-        opacity-0
-        group-hover:opacity-100
-        transition
-        "
-      />
+      <div className="food-image">
 
-      {/* Favorite */}
-
-      <button
-        className="
-        absolute
-        top-5
-        right-5
-        bg-white
-        p-2
-        rounded-full
-        shadow-md
-        hover:bg-red-50
-        "
-      >
-        <Heart size={18} />
-      </button>
-
-      {/* Image */}
-
-      <div className="flex justify-center">
-
-        <img
+        <motion.img
           src={food.image}
           alt={food.name}
-          className="
-          h-40
-          object-contain
-          group-hover:scale-110
-          transition-all
-          duration-500
-          "
+          whileHover={{
+            scale: 1.08,
+          }}
+          transition={{
+            duration: 0.35,
+          }}
         />
 
-      </div>
+        {/* Rating */}
 
-      <h2 className="text-xl font-bold mt-5">
-        {food.name}
-      </h2>
-
-      <p className="text-gray-500">
-        {food.category}
-      </p>
-
-      <div className="flex justify-between mt-5">
-
-        <div>
-
-          <p className="text-2xl font-bold text-violet-700">
-            ₹{food.price}
-          </p>
-
-        </div>
-
-        <div className="flex items-center gap-1">
-
+        <motion.div
+          className="rating-badge"
+          whileHover={{
+            scale: 1.08,
+          }}
+        >
           <Star
-            fill="#FFD700"
-            className="text-yellow-400"
-            size={18}
+            size={14}
+            fill="#FFD43B"
+            strokeWidth={0}
           />
 
-          {food.rating}
+          <span>{food.rating}</span>
 
-        </div>
+        </motion.div>
 
       </div>
 
-      <button
-        className="
-        mt-6
-        w-full
-        rounded-2xl
-        py-3
-        bg-violet-600
-        text-white
-        flex
-        justify-center
-        items-center
-        gap-2
-        hover:bg-violet-700
-        transition
-        "
-      >
-        <Plus size={18} />
-        Add to Cart
-      </button>
+      {/* ================= CONTENT ================= */}
 
-    </div>
+      <div className="food-content">
+
+        {/* Decorative Wave */}
+
+        <div className="food-info">
+
+          <span className="food-category">
+            {food.category}
+          </span>
+
+          <h3 className="food-title">
+            {food.name}
+          </h3>
+
+          <div className="food-bottom">
+
+            <div className="delivery-time">
+
+              <Clock3 size={15} />
+
+              <span>{food.deliveryTime}</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Floating Action Button */}
+
+        <motion.button
+          className={`
+            food-action-btn
+            ${buttonVariant === "added" ? "added" : ""}
+          `}
+          whileHover={{
+            scale: 1.08,
+            rotate: 12,
+          }}
+          whileTap={{
+            scale: 0.9,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 250,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onButtonClick?.();
+          }}
+        >
+          {renderIcon()}
+        </motion.button>
+
+      </div>
+    </motion.article>
   );
 };
 

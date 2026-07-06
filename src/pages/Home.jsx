@@ -1,47 +1,43 @@
 import Hero from "../features/home/component/Hero";
-import RestaurantCard from "../components/common/RestaurantCard";
 import restaurants from "../data/restaurants";
+import foods from "../data/food";
+
+import CuisineSection from "../features/home/component/CuisineSection";
+import FoodSection from "../features/home/component/FoodSection";
+import RestaurantSection from "../features/home/component/RestaurantSection";
+import OfferBanner from "../features/home/component/OfferBanner";
+import WhyChooseBiteThat from "../features/home/component/WhyChooseBiteThat";
+import Testimonials from "../features/home/component/Testimonials";
 
 const Home = () => {
   return (
     <>
+      {/* ================= HERO ================= */}
+
       <Hero />
 
-      {/* Restaurants Section */}
+      {/* ================= BROWSE BY CUISINES ================= */}
 
-      <section className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+      <CuisineSection />
 
-        <div className="mb-10">
+      {/* ================= POPULAR THIS WEEK ================= */}
 
-          <h2 className="text-4xl font-bold">
-            Featured Restaurants
-          </h2>
+      <FoodSection foods={foods}/>
 
-          <p className="text-gray-500 mt-2">
-            Discover the best restaurants near you.
-          </p>
+      {/* ================= FEATURED RESTAURANTS ================= */}
 
-        </div>
+      <RestaurantSection />
+      {/* ================= OFFER BANNER ================= */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <OfferBanner />
 
-          {restaurants.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.id}
-              restaurant={restaurant}
-            />
-          ))}
+      {/* ================= WHY CHOOSE BITETHAT ================= */}
 
-        </div>
+      <WhyChooseBiteThat />
 
-      </section>
+      {/* ================= CUSTOMER REVIEWS ================= */}
 
-      <section
-        id="offers"
-        className="py-28 bg-gradient-to-b from-white to-violet-50"
-      >
-        {/* Offers will go here */}
-      </section>
+      <Testimonials />
 
     </>
   );

@@ -13,7 +13,7 @@ import { FaGooglePlay } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-white mt-20">
+    <footer className="bg-slate-900 text-white">
       {/* ================= Newsletter ================= */}
 
       <section className="bg-white py-14">
