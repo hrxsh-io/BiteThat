@@ -11,35 +11,28 @@ import NotFound from "../pages/NotFound";
 import Layout from "../components/layout/Layout";
 
 export default function AppRoutes() {
-    return (
-        <BrowserRouter>
-            <Routes>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
 
-                <Route element={<Layout />}>
+          <Route
+            path="/restaurants"
+            element={<Restaurant />}
+          />
 
-                    <Route path="/" element={<Home />} />
+          <Route path="/cart" element={<Cart />} />
 
-                    <Route
-                        path="/restaurant/:id"
-                        element={<Restaurant />}
-                    />
+          <Route path="/login" element={<Login />} />
 
-                    <Route path="/cart" element={<Cart />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
-                    <Route path="/login" element={<Login />} />
+          <Route path="/orders" element={<Orders />} />
+        </Route>
 
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard />}
-                    />
-
-                    <Route path="/orders" element={<Orders />} />
-
-                </Route>
-
-                <Route path="*" element={<NotFound />} />
-
-            </Routes>
-        </BrowserRouter>
-    );
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

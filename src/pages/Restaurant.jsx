@@ -1,3 +1,5 @@
+import RestaurantPage from "../features/restaurants/RestaurantPage";
+
 export default function Restaurant() {
-    return <h1>Restaurant</h1>;
+  return <RestaurantPage />;
 }
