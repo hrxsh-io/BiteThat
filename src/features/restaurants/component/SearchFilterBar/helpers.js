@@ -4,10 +4,10 @@ export function filterRestaurants(restaurants, search, filters) {
     const matchesSearch =
       !search ||
       restaurant.name.toLowerCase().includes(search.toLowerCase()) ||
-      restaurant.cuisine.toLowerCase().includes(search.toLowerCase());
+      restaurant.Types.toLowerCase().includes(search.toLowerCase());
 
-    const matchesCuisine =
-      filters.cuisine.length === 0 ||
+    const matchesTypes =
+      filters.Types.length === 0 ||
       filters.cuisine.includes(restaurant.cuisine);
 
     const matchesRating =
