@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import {
@@ -9,38 +10,52 @@ import {
   MapPin,
 } from "lucide-react";
 
-const RestaurantCard = ({ restaurant, onClick }) => {
+const RestaurantCard = ({
+  restaurant,
+  variant = "default",
+}) => {
   const [liked, setLiked] = useState(false);
+
+  const navigate = useNavigate();
 
   return (
     <motion.article
       whileHover={{
-  y: -12,
-  scale: 1.01,
-}}
+        y: -12,
+        scale: 1.01,
+      }}
       transition={{
         duration: 0.35,
         ease: "easeOut",
       }}
-      onClick={() => onClick?.(restaurant)}
-      className="
-        group
-        relative
-        overflow-hidden
-        rounded-[32px]
-        border
-        border-violet-100
-        bg-white
-        shadow-lg
-        transition-all
-        duration-500
-        hover:border-violet-200
-        hover:shadow-[0_35px_90px_rgba(124,58,237,0.22)]
-      "
+      onClick={() => navigate(`/restaurant/${restaurant.id}`)}
+      className={`
+group
+relative
+${variant === "compact"
+  ? "w-[330px] flex-shrink-0"
+  : "w-full"}
+overflow-hidden
+rounded-[32px]
+border
+border-violet-100
+bg-white
+shadow-lg
+transition-all
+duration-500
+hover:border-violet-200
+hover:shadow-[0_35px_90px_rgba(124,58,237,0.22)]
+`}
     >
       {/* ================= IMAGE ================= */}
 
-      <div className="relative h-[260px] overflow-hidden">
+      <div
+  className={`relative ${
+    variant === "compact"
+      ? "h-[200px]"
+      : "h-[260px]"
+  } overflow-hidden`}
+>
 
         {/* Background Image */}
 
@@ -227,7 +242,15 @@ const RestaurantCard = ({ restaurant, onClick }) => {
 
       {/* ================= CONTENT ================= */}
 
-      <div className="space-y-6 p-6">
+      <div
+  className={`
+    ${
+      variant === "compact"
+        ? "space-y-4 p-4"
+        : "space-y-6 p-6"
+    }
+`}
+>
 
         {/* Cuisine */}
 
@@ -340,15 +363,15 @@ const RestaurantCard = ({ restaurant, onClick }) => {
           whileHover={{
             scale: 1.02,
           }}
-          className="
+          className={`
       rounded-2xl
       border
       border-violet-100
       bg-gradient-to-r
       from-violet-50
       to-fuchsia-50
-      p-5
-    "
+      ${variant === "compact" ? "p-3" : "p-5"}
+    `}
         >
 
           <div className="flex items-center justify-between">
@@ -435,32 +458,32 @@ const RestaurantCard = ({ restaurant, onClick }) => {
 
         {/* ================= PREMIUM CTA ================= */}
 
-<motion.div
-  whileHover={{
-    scale: 1.015,
-  }}
-  whileTap={{
-    scale: 0.985,
-  }}
-  className="relative overflow-hidden rounded-[24px]"
->
+        <motion.div
+          whileHover={{
+            scale: 1.015,
+          }}
+          whileTap={{
+            scale: 0.985,
+          }}
+          className="relative overflow-hidden rounded-[24px]"
+        >
 
-  {/* Animated Gradient */}
+          {/* Animated Gradient */}
 
-  <motion.div
-    animate={{
-      backgroundPosition: [
-        "0% 50%",
-        "100% 50%",
-        "0% 50%",
-      ],
-    }}
-    transition={{
-      repeat: Infinity,
-      duration: 8,
-      ease: "linear",
-    }}
-    className="
+          <motion.div
+            animate={{
+              backgroundPosition: [
+                "0% 50%",
+                "100% 50%",
+                "0% 50%",
+              ],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 8,
+              ease: "linear",
+            }}
+            className="
       absolute
       inset-0
       bg-[length:250%_250%]
@@ -469,12 +492,12 @@ const RestaurantCard = ({ restaurant, onClick }) => {
       via-fuchsia-600
       to-violet-700
     "
-  />
+          />
 
-  {/* Glow */}
+          {/* Glow */}
 
-  <div
-    className="
+          <div
+            className="
       absolute
       left-1/2
       top-1/2
@@ -486,46 +509,46 @@ const RestaurantCard = ({ restaurant, onClick }) => {
       bg-white/20
       blur-3xl
     "
-  />
+          />
 
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      onClick?.(restaurant);
-    }}
-    className="
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/restaurant/${restaurant.id}`);
+            }}
+            className={`
       relative
       flex
       w-full
       items-center
       justify-between
       px-6
-      py-5
+      ${variant === "compact" ? "py-3" : "py-5"}
       text-white
-    "
-  >
+    `}
+          >
 
-    <div>
+            <div>
 
-      <p className="text-lg font-bold">
-        Explore Restaurant
-      </p>
+              <p className="text-lg font-bold">
+                Explore Restaurant
+              </p>
 
-      <p className="mt-1 text-sm text-violet-100">
-        View Menu • Reviews • Offers
-      </p>
+              <p className="mt-1 text-sm text-violet-100">
+                View Menu • Reviews • Offers
+              </p>
 
-    </div>
+            </div>
 
-    <motion.div
-      whileHover={{
-        rotate: 45,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 250,
-      }}
-      className="
+            <motion.div
+              whileHover={{
+                rotate: 45,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 250,
+              }}
+              className="
         flex
         h-14
         w-14
@@ -535,15 +558,15 @@ const RestaurantCard = ({ restaurant, onClick }) => {
         bg-white/20
         backdrop-blur-xl
       "
-    >
+            >
 
-      <ArrowRight size={24} />
+              <ArrowRight size={24} />
 
-    </motion.div>
+            </motion.div>
 
-  </button>
+          </button>
 
-</motion.div>
+        </motion.div>
 
       </div>
 
