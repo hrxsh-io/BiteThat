@@ -1,0 +1,377 @@
+/* =========================================
+   BACKGROUND GRID
+========================================= */
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(124,58,237,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.08) 1px, transparent 1px);
+
+  background-size: 50px 50px;
+  animation: gridMove 30s linear infinite;
+}
+
+@keyframes gridMove {
+  from {
+    transform: translate(0px,0px);
+  }
+  to {
+    transform: translate(50px,50px);
+  }
+}
+
+/* =========================================
+   FLOATING
+========================================= */
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: float 7s ease-in-out infinite;
+}
+
+.float-fast {
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%{
+    transform:translateY(0px);
+  }
+
+  50%{
+    transform:translateY(-15px);
+  }
+
+  100%{
+    transform:translateY(0px);
+  }
+
+}
+
+/* =========================================
+   GLOW
+========================================= */
+
+.glow {
+
+  animation: glow 3s ease infinite;
+
+}
+
+@keyframes glow{
+
+0%{
+
+box-shadow:0 0 10px rgba(124,58,237,.15);
+
+}
+
+50%{
+
+box-shadow:0 0 35px rgba(124,58,237,.35);
+
+}
+
+100%{
+
+box-shadow:0 0 10px rgba(124,58,237,.15);
+
+}
+
+}
+
+/* =========================================
+   BUTTON SHINE
+========================================= */
+
+.shine {
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.shine::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-120%;
+
+height:100%;
+
+width:70%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.45),
+
+transparent
+
+);
+
+transform:skewX(-25deg);
+
+}
+
+.shine:hover::before{
+
+animation:shine 1s;
+
+}
+
+@keyframes shine{
+
+100%{
+
+left:150%;
+
+}
+
+}
+
+/* =========================================
+   GLASS
+========================================= */
+
+.glass{
+
+background:rgba(255,255,255,.55);
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.4);
+
+}
+
+/* =========================================
+   IMAGE HOVER
+========================================= */
+
+.food-image{
+
+transition:.45s;
+
+cursor:pointer;
+
+}
+
+.food-image:hover{
+
+transform:
+
+translateY(-12px)
+
+rotate(3deg)
+
+scale(1.05);
+
+}
+
+/* =========================================
+   SCROLL INDICATOR
+========================================= */
+
+.mouse{
+
+animation:mouse 2s infinite;
+
+}
+
+@keyframes mouse{
+
+0%{
+
+transform:translateY(0px);
+
+}
+
+50%{
+
+transform:translateY(10px);
+
+}
+
+100%{
+
+transform:translateY(0px);
+
+}
+
+}
+
+/* =========================================
+   POP
+========================================= */
+
+.pop{
+
+animation:pop 5s infinite;
+
+}
+
+@keyframes pop{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+}
+
+}
+
+/* =========================================
+   FADE UP
+========================================= */
+
+.fade-up{
+
+animation:fadeUp .8s ease;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(40px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0px);
+
+}
+
+}
+
+/* =========================================
+   PULSE DOT
+========================================= */
+
+.pulse-dot{
+
+position:relative;
+
+}
+
+.pulse-dot::after{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+border-radius:999px;
+
+background:#22c55e;
+
+animation:pulseDot 2s infinite;
+
+z-index:-1;
+
+}
+
+@keyframes pulseDot{
+
+0%{
+
+transform:scale(1);
+
+opacity:.7;
+
+}
+
+100%{
+
+transform:scale(3);
+
+opacity:0;
+
+}
+
+}
+
+/* =========================================
+   CARD HOVER
+========================================= */
+
+.hover-card{
+
+transition:.35s;
+
+}
+
+.hover-card:hover{
+
+transform:
+
+translateY(-10px);
+
+box-shadow:
+
+0 30px 60px rgba(124,58,237,.15);
+
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:1024px){
+
+.hero-grid{
+
+display:none;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.hero-grid{
+
+display:none;
+
+}
+
+}
+
+@media(max-width:640px){
+
+.hero-grid{
+
+display:none;
+
+}
+
+}
