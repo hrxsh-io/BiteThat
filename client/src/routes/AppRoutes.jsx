@@ -11,6 +11,7 @@ import NotFound from "../pages/NotFound";
 import RestaurantDetails from "../features/restaurantDetails/RestaurantDetails";
 
 import Layout from "../components/layout/Layout";
+import Signup from "../pages/Signup";
 
 export default function AppRoutes() {
   return (
@@ -38,6 +39,7 @@ export default function AppRoutes() {
 
           {/* Login */}
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
           {/* Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
