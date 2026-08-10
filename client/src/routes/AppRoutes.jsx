@@ -8,6 +8,8 @@ import Restaurant from "../pages/Restaurant";
 import RestaurantDetails from "../features/restaurantDetails/RestaurantDetails";
 import Cart from "../pages/Cart";
 import Orders from "../pages/Orders";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
@@ -34,6 +36,16 @@ export default function AppRoutes() {
 
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+
+                    <Route
+                        path="/forgot-password"
+                        element={<ForgotPassword />}
+                    />
+
+                    <Route
+                        path="/reset-password"
+                        element={<ResetPassword />}
+                    />
                 </Route>
 
 

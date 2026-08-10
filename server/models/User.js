@@ -34,6 +34,12 @@ const addressSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+
+    // ⭐ NEW
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
   { _id: true }
 );
@@ -77,6 +83,17 @@ const userSchema = new mongoose.Schema(
     addresses: {
       type: [addressSchema],
       default: [],
+    },
+
+    // ⭐ NEW (for forgot password)
+    resetPasswordCode: {
+      type: String,
+      select: false,
+    },
+
+    resetPasswordExpire: {
+      type: Date,
+      select: false,
     },
 
     role: {

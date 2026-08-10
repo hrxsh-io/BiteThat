@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "nodemon server.js",
-  "start": "node server.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,9 +23,11 @@
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.5.0",
     "mongoose": "^9.9.1",
+    "nodemailer": "^9.0.5",
     "react-hook-form": "^7.81.0",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "resend": "^6.18.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
