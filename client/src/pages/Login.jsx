@@ -3,8 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import logo from "../assets/logo.jpeg";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+    const { login } = useAuth();
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -51,15 +54,35 @@ export default function Login() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!validateForm()) return;
 
-        // Backend authentication will be connected here later.
-        console.log("Login data:", formData);
+        setLoading(true);
+        setErrors({});
 
-        navigate("/");
+        try {
+            await login(
+                formData.email.trim(),
+                formData.password,
+                formData.rememberMe
+            );
+
+            navigate("/");
+        } catch (error) {
+            console.error("Login error:", error);
+
+            const message =
+                error.response?.data?.message ||
+                "Unable to login. Please try again.";
+
+            setErrors({
+                general: message,
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -78,17 +101,17 @@ export default function Login() {
                     <div className="relative z-10 flex w-full flex-col justify-between p-12 xl:p-16">
 
                         <Link to="/" className="inline-flex w-fit items-center gap-3">
-  <img
-    src={logo}
-    alt="BiteThat"
-    className="w-11 h-11 rounded-full object-cover"
-  />
+                            <img
+                                src={logo}
+                                alt="BiteThat"
+                                className="w-11 h-11 rounded-full object-cover"
+                            />
 
-  <h2 className="text-2xl font-extrabold tracking-tight">
-    <span className="text-violet-400">bite</span>
-    <span className="text-white">That</span>
-  </h2>
-</Link>
+                            <h2 className="text-2xl font-extrabold tracking-tight">
+                                <span className="text-violet-400">bite</span>
+                                <span className="text-white">That</span>
+                            </h2>
+                        </Link>
 
                         {/* Main content */}
                         <div className="max-w-xl">
@@ -171,6 +194,11 @@ export default function Login() {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.15, duration: 0.5 }}
                         >
+                            {errors.general && (
+                                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                                    {errors.general}
+                                </div>
+                            )}
 
                             {/* Email */}
                             <div>
@@ -278,14 +306,17 @@ export default function Login() {
                             {/* Submit */}
                             <button
                                 type="submit"
-                                className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 hover:shadow-xl hover:shadow-violet-600/25 active:scale-[0.99]"
+                                disabled={loading}
+                                className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 hover:shadow-xl hover:shadow-violet-600/25 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
                             >
-                                Sign in
+                                {loading ? "Signing in..." : "Sign in"}
 
-                                <ArrowRight
-                                    size={18}
-                                    className="transition-transform group-hover:translate-x-1"
-                                />
+                                {!loading && (
+                                    <ArrowRight
+                                        size={18}
+                                        className="transition-transform group-hover:translate-x-1"
+                                    />
+                                )}
                             </button>
 
                             {/* Divider */}

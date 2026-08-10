@@ -7,8 +7,12 @@ import {
   Check,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { registerUser } from "../services/authApi";
+import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -77,16 +81,35 @@ export default function Signup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    // Backend registration will be connected here later.
-    console.log("Signup data:", formData);
+    setLoading(true);
 
-    navigate("/login");
-  };
+    try {
+        const response = await registerUser({
+            name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
+            email: formData.email.trim(),
+            password: formData.password,
+        });
+
+        // Store authentication data
+        login(response);
+navigate("/");
+    } catch (error) {
+        const message =
+            error.response?.data?.message ||
+            "Unable to create your account. Please try again.";
+
+        setErrors({
+            general: message,
+        });
+    } finally {
+        setLoading(false);
+    }
+};
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -207,6 +230,12 @@ export default function Signup() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.15, duration: 0.5 }}
             >
+
+              {errors.general && (
+    <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        {errors.general}
+    </div>
+)}
 
               {/* Name */}
               <div className="grid grid-cols-2 gap-4">
@@ -435,16 +464,19 @@ export default function Signup() {
 
               {/* Submit */}
               <button
-                type="submit"
-                className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 hover:shadow-xl hover:shadow-violet-600/25 active:scale-[0.99]"
-              >
-                Create account
+    type="submit"
+    disabled={loading}
+    className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-600/20 transition hover:bg-violet-700 hover:shadow-xl hover:shadow-violet-600/25 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
+>
+    {loading ? "Creating account..." : "Create account"}
 
-                <ArrowRight
-                  size={18}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </button>
+    {!loading && (
+        <ArrowRight
+            size={18}
+            className="transition-transform group-hover:translate-x-1"
+        />
+    )}
+</button>
 
               {/* Divider */}
               <div className="relative py-2">

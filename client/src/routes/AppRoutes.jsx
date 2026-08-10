@@ -1,56 +1,71 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Layout from "../components/layout/Layout";
 
 import Home from "../pages/Home";
 import Restaurant from "../pages/Restaurant";
+import RestaurantDetails from "../features/restaurantDetails/RestaurantDetails";
 import Cart from "../pages/Cart";
 import Orders from "../pages/Orders";
+
 import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
-import NotFound from "../pages/NotFound";
-
-import RestaurantDetails from "../features/restaurantDetails/RestaurantDetails";
-
-import Layout from "../components/layout/Layout";
 import Signup from "../pages/Signup";
+import Profile from "../pages/Profile";
+
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 export default function AppRoutes() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes with Navbar & Footer */}
-        <Route element={<Layout />}>
-          {/* Home */}
-          <Route path="/" element={<Home />} />
+    return (
+        <BrowserRouter>
+            <Routes>
 
-          {/* Restaurant Listing */}
-          <Route
-            path="/restaurants"
-            element={<Restaurant />}
-          />
+                {/* ==========================================
+                    PUBLIC ROUTES
+                ========================================== */}
 
-          {/* Restaurant Details */}
-          <Route
-            path="/restaurant/:id"
-            element={<RestaurantDetails />}
-          />
+                <Route element={<Layout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/restaurants" element={<Restaurant />} />
+                    <Route
+                        path="/restaurant/:id"
+                        element={<RestaurantDetails />}
+                    />
 
-          {/* Cart */}
-          <Route path="/cart" element={<Cart />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                </Route>
 
-          {/* Login */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
 
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
+                {/* ==========================================
+                    PROTECTED ROUTES
+                ========================================== */}
 
-          {/* Orders */}
-          <Route path="/orders" element={<Orders />} />
-        </Route>
+                <Route element={<ProtectedRoute />}>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
+                    <Route element={<Layout />}>
+
+                        <Route
+                            path="/profile"
+                            element={<Profile />}
+                        />
+
+                        <Route
+                            path="/orders"
+                            element={<Orders />}
+                        />
+
+                        <Route
+                            path="/cart"
+                            element={<Cart />}
+                        />
+
+                    </Route>
+
+                </Route>
+
+            </Routes>
+        </BrowserRouter>
+    );
 }
+
