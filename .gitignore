@@ -1,11 +1,31 @@
 # Default ignored files
 /shelf/
 /.idea/workspace.xml
+
 # Editor-based HTTP Client requests
 /httpRequests/
+
 # Ignored default folder with query files
 /queries/
+
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-node_modules/server/.env
+
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables
+.env
+.env.*
+server/.env
+client/.env
+
+# Build output
+dist/
+client/dist/
+
+# macOS
+.DS_Store

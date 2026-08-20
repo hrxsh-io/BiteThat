@@ -1,9 +1,5 @@
 const mongoose = require("mongoose");
 
-// ==========================================
-// ORDER ITEM
-// ==========================================
-
 const orderItemSchema = new mongoose.Schema(
   {
     foodId: {
@@ -17,6 +13,11 @@ const orderItemSchema = new mongoose.Schema(
       trim: true,
     },
 
+    image: {
+      type: String,
+      default: "",
+    },
+
     price: {
       type: Number,
       required: true,
@@ -28,29 +29,9 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
-
-    image: {
-      type: String,
-      default: "",
-    },
-
-    restaurantId: {
-      type: String,
-      required: true,
-    },
-
-    restaurantName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
   },
   { _id: false }
 );
-
-// ==========================================
-// DELIVERY ADDRESS
-// ==========================================
 
 const deliveryAddressSchema = new mongoose.Schema(
   {
@@ -93,10 +74,6 @@ const deliveryAddressSchema = new mongoose.Schema(
   { _id: false }
 );
 
-// ==========================================
-// ORDER
-// ==========================================
-
 const orderSchema = new mongoose.Schema(
   {
     // User who placed the order
@@ -107,7 +84,26 @@ const orderSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Ordered food items
+    // Restaurant snapshot
+    restaurant: {
+      id: {
+        type: String,
+        required: true,
+      },
+
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+
+      image: {
+        type: String,
+        default: "",
+      },
+    },
+
+    // Ordered items
     items: {
       type: [orderItemSchema],
       required: true,
@@ -117,7 +113,13 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
-    // Pricing
+    // Delivery address snapshot
+    deliveryAddress: {
+      type: deliveryAddressSchema,
+      required: true,
+    },
+
+    // Price breakdown
     subtotal: {
       type: Number,
       required: true,
@@ -130,13 +132,13 @@ const orderSchema = new mongoose.Schema(
       min: 0,
     },
 
-    tax: {
+    discount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    discount: {
+    biteCoinsUsed: {
       type: Number,
       default: 0,
       min: 0,
@@ -148,13 +150,20 @@ const orderSchema = new mongoose.Schema(
       min: 0,
     },
 
-    // Delivery
-    deliveryAddress: {
-      type: deliveryAddressSchema,
-      required: true,
+    // Payment
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "card", "upi", "wallet"],
+      default: "cod",
     },
 
-    // Order status
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed", "refunded"],
+      default: "pending",
+    },
+
+    // Order lifecycle
     status: {
       type: String,
       enum: [
@@ -169,25 +178,15 @@ const orderSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Payment
-    paymentMethod: {
-      type: String,
-      enum: ["cash", "card", "upi"],
-      default: "cash",
-    },
-
-    paymentStatus: {
-      type: String,
-      enum: ["pending", "paid", "failed", "refunded"],
-      default: "pending",
-    },
-
-    // Optional notes
-    specialInstructions: {
+    cancellationReason: {
       type: String,
       default: "",
       trim: true,
-      maxlength: 500,
+    },
+
+    cancelledAt: {
+      type: Date,
+      default: null,
     },
   },
   {

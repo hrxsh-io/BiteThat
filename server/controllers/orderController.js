@@ -1,126 +1,126 @@
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 
-// ==========================================
+// ======================================================
+// Helper: get authenticated user ID from JWT payload
+// ======================================================
+
+const getUserId = (req) => {
+  return req.user?.id || req.user?._id || req.user?.userId;
+};
+
+// ======================================================
 // CREATE ORDER
 // POST /api/orders
-// ==========================================
+// ======================================================
 
 const createOrder = async (req, res) => {
   try {
+    const userId = getUserId(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
     const {
+      restaurant,
       items,
       deliveryAddress,
       subtotal,
       deliveryFee = 0,
-      tax = 0,
       discount = 0,
-      paymentMethod = "cash",
-      specialInstructions = "",
+      biteCoinsUsed = 0,
+      total,
+      paymentMethod = "cod",
     } = req.body;
 
-    // ==========================================
-    // VALIDATION
-    // ==========================================
+    // ------------------------------
+    // Basic validation
+    // ------------------------------
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    if (!restaurant?.id || !restaurant?.name) {
       return res.status(400).json({
         success: false,
-        message: "Order must contain at least one item",
+        message: "Restaurant information is required",
       });
     }
 
-    if (!deliveryAddress) {
+    if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Delivery address is required",
+        message: "At least one item is required",
       });
     }
 
-    if (
-      deliveryAddress.addressLine === undefined ||
-      deliveryAddress.city === undefined
-    ) {
+    if (!deliveryAddress?.addressLine || !deliveryAddress?.city) {
       return res.status(400).json({
         success: false,
-        message: "Address line and city are required",
+        message: "Complete delivery address is required",
       });
     }
 
-    // ==========================================
-    // VALIDATE ITEMS
-    // ==========================================
-
-    for (const item of items) {
-      if (
-        !item.foodId ||
-        !item.name ||
-        item.price === undefined ||
-        !item.quantity ||
-        !item.restaurantId ||
-        !item.restaurantName
-      ) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid order item",
-        });
-      }
-
-      if (item.price < 0 || item.quantity < 1) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid item price or quantity",
-        });
-      }
-    }
-
-    // ==========================================
-    // CALCULATE TOTALS ON SERVER
-    // ==========================================
-
-    const calculatedSubtotal = items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    const calculatedTotal =
-      calculatedSubtotal +
-      Number(deliveryFee) +
-      Number(tax) -
-      Number(discount);
-
-    if (calculatedTotal < 0) {
+    if (subtotal === undefined || total === undefined) {
       return res.status(400).json({
         success: false,
-        message: "Invalid order total",
+        message: "Order pricing information is required",
       });
     }
 
-    // ==========================================
-    // CREATE ORDER
-    // ==========================================
+    // ------------------------------
+    // Validate MongoDB user ID
+    // ------------------------------
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid user authentication",
+      });
+    }
+
+    // ------------------------------
+    // Create order
+    // ------------------------------
 
     const order = await Order.create({
-      user: req.user.userId,
+      user: userId,
 
-      items,
+      restaurant: {
+        id: String(restaurant.id),
+        name: restaurant.name,
+        image: restaurant.image || "",
+      },
 
-      subtotal: calculatedSubtotal,
+      items: items.map((item) => ({
+        foodId: String(item.foodId || item.id),
+        name: item.name,
+        image: item.image || "",
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+      })),
 
+      deliveryAddress: {
+        label: deliveryAddress.label || "Home",
+        addressLine: deliveryAddress.addressLine,
+        city: deliveryAddress.city,
+        state: deliveryAddress.state || "",
+        pincode: deliveryAddress.pincode || "",
+        landmark: deliveryAddress.landmark || "",
+      },
+
+      subtotal: Number(subtotal),
       deliveryFee: Number(deliveryFee),
-      tax: Number(tax),
       discount: Number(discount),
-
-      total: calculatedTotal,
-
-      deliveryAddress,
+      biteCoinsUsed: Number(biteCoinsUsed),
+      total: Number(total),
 
       paymentMethod,
 
-      paymentStatus:
-        paymentMethod === "cash" ? "pending" : "pending",
+      paymentStatus: paymentMethod === "cod" ? "pending" : "pending",
 
-      specialInstructions: specialInstructions.trim(),
+      status: "placed",
     });
 
     return res.status(201).json({
@@ -133,23 +133,31 @@ const createOrder = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Server error while creating order",
+      message: "Failed to create order",
+      error: error.message,
     });
   }
 };
 
-// ==========================================
-// GET MY ORDERS
+// ======================================================
+// GET ALL MY ORDERS
 // GET /api/orders
-// ==========================================
+// ======================================================
 
 const getMyOrders = async (req, res) => {
   try {
+    const userId = getUserId(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
     const orders = await Order.find({
-      user: req.user.userId,
-    }).sort({
-      createdAt: -1,
-    });
+      user: userId,
+    }).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -161,19 +169,28 @@ const getMyOrders = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Server error while fetching orders",
+      message: "Failed to fetch orders",
+      error: error.message,
     });
   }
 };
 
-// ==========================================
+// ======================================================
 // GET SINGLE ORDER
-// GET /api/orders/:orderId
-// ==========================================
+// GET /api/orders/:id
+// ======================================================
 
 const getOrderById = async (req, res) => {
   try {
+    const userId = getUserId(req);
     const { orderId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
 
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
       return res.status(400).json({
@@ -184,7 +201,7 @@ const getOrderById = async (req, res) => {
 
     const order = await Order.findOne({
       _id: orderId,
-      user: req.user.userId,
+      user: userId,
     });
 
     if (!order) {
@@ -203,19 +220,29 @@ const getOrderById = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Server error while fetching order",
+      message: "Failed to fetch order",
+      error: error.message,
     });
   }
 };
 
-// ==========================================
+// ======================================================
 // CANCEL ORDER
-// PATCH /api/orders/:orderId/cancel
-// ==========================================
+// PATCH /api/orders/:id/cancel
+// ======================================================
 
 const cancelOrder = async (req, res) => {
   try {
+    const userId = getUserId(req);
     const { orderId } = req.params;
+    const { reason = "Cancelled by user" } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
 
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
       return res.status(400).json({
@@ -226,7 +253,7 @@ const cancelOrder = async (req, res) => {
 
     const order = await Order.findOne({
       _id: orderId,
-      user: req.user.userId,
+      user: userId,
     });
 
     if (!order) {
@@ -236,25 +263,25 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    // Only allow cancellation before delivery
     const nonCancellableStatuses = [
       "delivered",
       "cancelled",
+      "out_for_delivery",
     ];
 
     if (nonCancellableStatuses.includes(order.status)) {
       return res.status(400).json({
         success: false,
-        message: `Order cannot be cancelled because it is already ${order.status}`,
+        message: `Order cannot be cancelled once it is ${order.status.replace(
+          "_",
+          " "
+        )}`,
       });
     }
 
     order.status = "cancelled";
-
-    // Refund handling can be connected later
-    if (order.paymentStatus === "paid") {
-      order.paymentStatus = "refunded";
-    }
+    order.cancellationReason = reason;
+    order.cancelledAt = new Date();
 
     await order.save();
 
@@ -268,7 +295,8 @@ const cancelOrder = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Server error while cancelling order",
+      message: "Failed to cancel order",
+      error: error.message,
     });
   }
 };
